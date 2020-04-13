@@ -3,12 +3,11 @@ package com.amazon.test.steps;
 import com.amazon.base.BasePOM;
 
 import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 
 public class OrderPlacementSteps extends BasePOM{
 	
-	@Given("^User click on Proceed to Checkout button cart page$")
+	@And("^User click on Proceed to Checkout button cart page$")
 	public void clickProceedtoCheckoutButton() {
 		orderPlacementPage().verifyProceedtoCheckoutButtonEnabled();
 		orderPlacementPage().clickProceedtoCheckoutButton();
@@ -21,6 +20,7 @@ public class OrderPlacementSteps extends BasePOM{
 	
 	@And("^user continue in delivery optoins page$")
 	public void userContinueDeliveryOptions() {
+		
 		orderPlacementPage().continueDeliveryOptions();
 	}
 	

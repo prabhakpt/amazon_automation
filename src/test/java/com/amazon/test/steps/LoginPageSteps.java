@@ -23,6 +23,4 @@ public class LoginPageSteps extends BasePOM{
 		loginPage().enterPassword();
 		loginPage().clickLoginButton();
 	}
-	
-	
 }

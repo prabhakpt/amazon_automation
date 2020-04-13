@@ -22,7 +22,7 @@ public class Hooks {
 	private static final Logger LOG = Logger.getLogger(Hooks.class);	
 	public static AndroidDriver<MobileElement> driver;
 	
-	@Before("@sanity")
+	@Before("@regression")
 	public void setupDriverDetails() {
 		LOG.info("Intiating the drivers based onf properties file configuration");
 		if(ReadPropertiesFile.GetProperty(PropertyConstants.EXECUTION_ENVIRONMENT).equals("realdevice"))
@@ -33,7 +33,7 @@ public class Hooks {
 	
 	@After
 	public void tearDown() {
-		driver.runAppInBackground(Duration.ofSeconds(2));
+		driver.quit();
 	}
 	
 	public void configureAndroidRealDevice() {
@@ -46,7 +46,7 @@ public class Hooks {
 			File resourcesDirectory = new File(ReadPropertiesFile.GetProperty(PropertyConstants.APP_PATH));
 			File fs  = new File (resourcesDirectory, ReadPropertiesFile.GetProperty(PropertyConstants.APK_SUB_FOLDER)+ReadPropertiesFile.GetProperty(PropertyConstants.APP));
 			cap.setCapability(MobileCapabilityType.APP, fs.getAbsolutePath() );
-			
+			cap.setCapability(MobileCapabilityType.AUTOMATION_NAME,"uiautomator2");
 			cap.setCapability(PropertyConstants.CAPABILITY_APP_PACKAGE, ReadPropertiesFile.GetProperty(PropertyConstants.APP_PACKAGE));
 			cap.setCapability(PropertyConstants.CAPABILITY_APP_ACTIVITY, ReadPropertiesFile.GetProperty(PropertyConstants.APP_ACTIVITY));
 			
@@ -70,12 +70,17 @@ public class Hooks {
 		capabilities.setCapability(MobileCapabilityType.UDID, ReadPropertiesFile.GetProperty(PropertyConstants.EMULATOR_UDID_DEVICE));
 		capabilities.setCapability(PropertyConstants.CAPABILITY_APP_PACKAGE, ReadPropertiesFile.GetProperty(PropertyConstants.APP_PACKAGE));
 		capabilities.setCapability(PropertyConstants.CAPABILITY_APP_ACTIVITY, ReadPropertiesFile.GetProperty(PropertyConstants.APP_ACTIVITY));
+		File resourcesDirectory = new File(ReadPropertiesFile.GetProperty(PropertyConstants.APP_PATH));
+		File fs  = new File (resourcesDirectory, ReadPropertiesFile.GetProperty(PropertyConstants.APK_SUB_FOLDER)+ReadPropertiesFile.GetProperty(PropertyConstants.APP));
+		capabilities.setCapability(MobileCapabilityType.APP, fs.getAbsolutePath() );
+		
 		URL url;
 		
 		try {
 			url = new URL(ReadPropertiesFile.getAppiumURL().toString());
 			driver = new AndroidDriver<MobileElement>(url, capabilities);
 			driver.manage().timeouts().implicitlyWait(40, TimeUnit.SECONDS);
+			driver.resetApp();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}

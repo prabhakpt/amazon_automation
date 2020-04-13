@@ -28,8 +28,7 @@ public class ReadPropertiesFile {
 		}
 	}
 	
-	public static String GetProperty(String key)
-	{
+	public static String GetProperty(String key){
 		if(properties == null){
 			ReadPropertyFile();
 		}

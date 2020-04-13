@@ -16,7 +16,7 @@ public class HomePageSteps extends BasePOM{
 	
 	@When("^the app opens verify the app loded successfully$")
 	public void validateHomePage() {
-		System.out.println("Login Page is appearing");
+		System.out.println("Login Page loading in progress");
 		homePage().isHomePageLanded();
 	}
 	

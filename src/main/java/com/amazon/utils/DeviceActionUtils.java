@@ -8,19 +8,18 @@ import static java.time.Duration.ofMillis;
 import static java.time.Duration.ofSeconds;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ScreenOrientation;
-import org.openqa.selenium.interactions.touch.TouchActions;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.MultiTouchAction;
 import io.appium.java_client.TouchAction;
-import io.appium.java_client.android.Activity;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
-import io.appium.java_client.android.AndroidKeyCode;
 import io.appium.java_client.touch.offset.PointOption;
 
 public class DeviceActionUtils {
@@ -87,7 +86,7 @@ public class DeviceActionUtils {
  
         new TouchAction(driver)
                 .press(point(anchor, startPoint))
-                .waitAction(waitOptions(ofMillis(1000)))
+                .waitAction(waitOptions(ofMillis(500)))
                 .moveTo(point(anchor, endPoint))
                 .release().perform();
     }
@@ -137,12 +136,6 @@ public class DeviceActionUtils {
     	}
     }
     
-    public void scrollToElement(MobileElement element) {
-    	TouchActions action = new TouchActions(driver);
-    	action.scroll(element, 10, 100);
-    	action.perform();
-    }
-    
     public void closeKeyPad() {
     	driver.hideKeyboard();
     }
@@ -151,5 +144,30 @@ public class DeviceActionUtils {
     	TouchAction touchAction = new TouchAction(driver);
     	touchAction.tap(PointOption.point(xCordinate, yCordinate)).perform();
     }
-           
+    
+    public void scrollToElement(MobileElement element) {
+        	System.out.println("Starated executing the scroll down element");
+            boolean flag=true;
+            int count=1;
+            while(flag){
+                try {
+                    if(element.isDisplayed()) {
+	                    flag=false;
+	                    break;
+                    }
+                }
+                catch(Exception NoSuchElementException) {
+                    count=count+1;
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("start","40%,90%");
+                    params.put("end","40%,20%");
+                    params.put("duration","2");
+                    Object res= driver.executeScript("mobile:touch:swipe",params);
+	                if(count==5){
+	                    break;
+	                }
+                }
+            }
+        }
+                 
 }

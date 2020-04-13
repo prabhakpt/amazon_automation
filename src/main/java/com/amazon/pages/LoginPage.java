@@ -3,7 +3,6 @@ package com.amazon.pages;
 import com.amazon.base.BasePOM;
 import com.amazon.constants.PropertyConstants;
 import com.amazon.pageobjects.LoginPagePO;
-import com.amazon.utils.APPHelper;
 import com.amazon.utils.AssertHelper;
 import com.amazon.utils.ReadPropertiesFile;
 
@@ -12,11 +11,11 @@ public class LoginPage extends BasePOM{
 	LoginPagePO loginPage = new LoginPagePO();
 	
 	public void enterEmailAddress() {
-		appHelper().enterTextByElement(loginPage.emailID[0],loginPage.emailID[1],ReadPropertiesFile.GetProperty(PropertyConstants.USERNAME));
+		appHelper().enterTextWithKeyPad(loginPage.emailID[0],loginPage.emailID[1],ReadPropertiesFile.GetProperty(PropertyConstants.USERNAME));
 	}
 	
 	public void enterPassword() {
-		appHelper().enterTextByElement(loginPage.password[0],loginPage.password[1],ReadPropertiesFile.GetProperty(PropertyConstants.PASSWORD));
+		appHelper().enterTextWithKeyPad(loginPage.password[0],loginPage.password[1],ReadPropertiesFile.GetProperty(PropertyConstants.PASSWORD));
 	}
 	
 	public void clickOnContinueButton() {

@@ -2,10 +2,12 @@ package com.amazon.pages;
 
 import com.amazon.base.BasePOM;
 import com.amazon.pageobjects.ProductsPO;
+import com.amazon.utils.AssertHelper;
 
 public class ProductsPage extends BasePOM{
 	
 	ProductsPO products = new ProductsPO();
+	String productName, price;
 	
 	public void enterProductinSearchBar(String product) {
 		appHelper().clickByElement(products.searchTextBox[0], products.searchTextBox[1]);
@@ -17,11 +19,10 @@ public class ProductsPage extends BasePOM{
 	}
 	
 	public void accessFirstProductInSearchResults() {
-		appHelper().clickWithoutScroll(products.firstSearchOption[0], products.firstSearchOption[1]);
+		appHelper().clickByElement(products.firstSearchOption[0], products.firstSearchOption[1]);
 	}
 	
 	public void selectGetProductNamefromResults(String productName) {
-		appHelper().captureScreenShots();
 		appHelper().selectProductByName(products.productIndex[0], products.productIndex[1], productName);
 	}
 	
@@ -30,8 +31,8 @@ public class ProductsPage extends BasePOM{
 	}
 	
 	public void clickOnAddtoCartButton() {
-		appHelper().scrollDowntoXPath(products.addToCartButton[1]);
-		appHelper().clickByElement(products.addToCartButton[0], products.addToCartButton[1]);
+		//appHelper().scrollDowntoXPath(products.addToCartButton[1]);
+		appHelper().scrolltoElementAndClick(products.addToCartButton[0], products.addToCartButton[1]);
 	}
 	
 	public void navigateToSoppingCartPage() {
@@ -39,8 +40,24 @@ public class ProductsPage extends BasePOM{
 	}
 	
 	public void isImagePresentInProductPage() {
-		System.out.println("Product page validation for image");
 		appHelper().isLocatorDisplayed(products.imageBlock[0], products.imageBlock[1]);
-		System.out.println("Product page validation for image - success");
+	}
+	
+	public void getProductTitle(){
+		productName = appHelper().getTextByLocator(products.productTitle[0], products.productTitle[1]);
+		System.out.println("Product name in the xpath"+productName);
+	}
+	
+	public void getProductPrice() {
+		price = appHelper().getTextByLocator(products.priceToPay[0], products.priceToPay[1]);
+		System.out.println("Price in the xpath"+price);
+	}
+	
+	public void verifyPriceAndProductName() {
+		String content = appHelper().getTextByLocator(products.cartPageContent[0], products.cartPageContent[1]);
+		if(content!=null && !content.isEmpty()) {
+			AssertHelper.assertTrue(content.contains(price));
+			AssertHelper.assertTrue(content.contains(productName));
+		}
 	}
 }

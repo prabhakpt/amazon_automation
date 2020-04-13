@@ -13,7 +13,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -26,9 +25,6 @@ import com.amazon.constants.PropertyConstants;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.nativekey.AndroidKey;
-import io.appium.java_client.android.nativekey.KeyEvent;
 
 
 public class APPHelper {
@@ -116,7 +112,6 @@ public class APPHelper {
     }
     
     public void clickWithoutScroll(String identifier, String locator) {
-    	//scrollTillElementAppearsInLandscape(identifier,locator);
     	MobileElement element = getMobileElement(identifier, locator);
     	AssertHelper.assertNotNull(element);
     	element.click();
@@ -136,6 +131,7 @@ public class APPHelper {
     }
     
     public void enterTextByElement(String identifier, String locator,String text) {
+    	getMobileElement(identifier, locator).click();
 		getMobileElement(identifier, locator).sendKeys(text);
 		deviceActionUtils.closeKeyPad();
 	}
@@ -147,13 +143,6 @@ public class APPHelper {
     public void verifySizeofSearResults(String identifier, String locator) {
     	List<MobileElement> mobileElements = getMobileElements(identifier,locator);
     	Assert.assertTrue(mobileElements.size()>=1);
-    }
-    
-    public List<MobileElement> getChildELementsofParentElement(String parentIdentifier, String parentLocator,String childIdentifier, String childLocator) {
-    	LOG.info("started accessing the element parent");
-    	MobileElement parentElement = getMobileElement(parentIdentifier, parentLocator);
-    	LOG.info("Parent element"+parentElement.getText());
-    	return parentElement.findElementsByClassName(childLocator);
     }
     
     public String getTextByLocator(String identifier, String locator) {
@@ -168,13 +157,20 @@ public class APPHelper {
        
     public void selectProductByName(String identifier, String locator,String productName) {
     	
+    	MobileElement element = getMobileElement(identifier, locator);
+    	List<MobileElement> elements = element.findElementsByXPath("//android.view.View");
     	
-    	MobileElement element = getMobileElement("xpath", "//android.view.View[contains(@text,'"+productName+"')]");
+    	LOG.info("Size fo products list in products page::"+elements.size());
     	
-    		System.out.println("Text of cliclking element is:"+element.getText());
-    	
-    		element.click();
+    	for(MobileElement eachElement:elements) {
+    		System.out.println("product name: "+eachElement.getText());
+    		if(eachElement.getText().contains(productName)) {
+    			eachElement.click();
+    			break;
+    		}
+    		deviceActionUtils.verticalSwipeByPercentages(0.3, 0.3, 0.2);
     	}
+    } 
     
     public void scrollByOrientation(MobileElement element) {
     	if(isLandscape) {
@@ -183,15 +179,12 @@ public class APPHelper {
     }
     
     public void waitForElement(String identifier, String locator) {
-    	int waitTime=5;
+    	int waitTime=15;
     	if(isLandscape || (ReadPropertiesFile.GetProperty(PropertyConstants.EXECUTION_ENVIRONMENT).equals("emulator")))
-    		waitTime = 25;
-    		
-	    Wait wait = new FluentWait(driver)
-	            .withTimeout(waitTime, TimeUnit.SECONDS)
-	            .pollingEvery(250, TimeUnit.MILLISECONDS)
-	            .ignoring(NoSuchElementException.class)
-	            .ignoring(TimeoutException.class);
+    	{
+    		System.out.println("Waiting for element by 100 seconds"); 
+    		waitTime = 100;
+    	}    
 	    
 	    By by = null;
 	    switch(Identifier.valueOf(identifier)) {
@@ -207,7 +200,12 @@ public class APPHelper {
 	    				break;
     	}
 	    
-	    //System.out.println("Wait for element");
+	    Wait wait = new FluentWait(driver)
+	            .withTimeout(waitTime, TimeUnit.SECONDS)
+	            .pollingEvery(250, TimeUnit.MILLISECONDS)
+	            .ignoring(NoSuchElementException.class)
+	            .ignoring(TimeoutException.class);
+	    
 	    wait.until(ExpectedConditions.visibilityOfElementLocated(by));
     }    
     
@@ -252,6 +250,19 @@ public class APPHelper {
 	    	for(int i=0;i<10;i++) {
 	    	if(isLocatorDisplayed(identifier,locator))
 	    		deviceActionUtils.verticalSwipeByPercentages(0.5, 0.3, 0.2);
+    	}
+    }
+    
+    public void scrolltoElementAndClick(String identifier, String locator) {
+    	for(int i=1;i<20;i++) {
+	    	if(!isLocatorDisplayed(identifier,locator)) {
+	    		System.out.println("Locaor is not displayed scrolling vertically");
+	    		deviceActionUtils.verticalSwipeByPercentages(0.5, 0.3, 0.3);
+	    	}else {
+	    		System.out.println("Locator displaye");
+	    		getMobileElement(identifier, locator).click();
+	    		break;
+	    	}
     	}
     }
     
