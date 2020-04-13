@@ -12,9 +12,9 @@ Update the properties file with values before executing the automation scripts. 
 1.test.execution.environment -> Device type configuration - realdevice/emulator
 
 2.Android Device capabilities
-	* android.realdevice.platform_name = android
-	* android.realdevice.device_name = samsung
-	* android.realdevice.version = 6.0.1
+ * android.realdevice.platform_name = android
+ * android.realdevice.device_name = samsung
+ * android.realdevice.version = 6.0.1
 	
 3.Amazon app needs to be installed from PlayStore
 
